@@ -1,0 +1,57 @@
+name: one-time-upstream-import
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import pinned Hermes Agent snapshot without upstream workflows
+        env:
+          UPSTREAM_SHA: dd418284db1804d33cd3d6d51c17bbfb1ad8f685
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          source_dir="$(mktemp -d)"
+          target_dir="$(mktemp -d)"
+
+          git init --initial-branch=import
+          git remote add upstream https://github.com/NousResearch/hermes-agent.git
+          git fetch upstream "$UPSTREAM_SHA"
+          test "$(git rev-parse FETCH_HEAD)" = "$UPSTREAM_SHA"
+
+          git archive "$UPSTREAM_SHA" | tar -x -C "$source_dir"
+          rm -rf "$source_dir/.github/workflows"
+
+          mkdir -p "$source_dir/.github/workflows"
+          curl -fsSL \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/.github/workflows/one-time-upstream-import.yml?ref=${GITHUB_SHA}" \
+            | jq -r .content | base64 --decode \
+            > "$source_dir/.github/workflows/one-time-upstream-import.yml"
+
+          cat > "$source_dir/UPSTREAM_IMPORT.md" <<EOF
+          # Upstream Import Manifest
+
+          - Upstream: https://github.com/NousResearch/hermes-agent
+          - Upstream branch: main
+          - Upstream commit: $UPSTREAM_SHA
+          - Import mode: source snapshot for personal development.
+          - Excluded: upstream .github/workflows/ (18 files at import audit).
+          - License: retain upstream MIT license material included in this snapshot.
+          EOF
+
+          git init --initial-branch=main "$target_dir"
+          cp -a "$source_dir"/. "$target_dir"/
+          git -C "$target_dir" config user.name "github-actions[bot]"
+          git -C "$target_dir" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C "$target_dir" add -f -A
+          git -C "$target_dir" commit -m "chore: import complete Hermes Agent snapshot without upstream workflows"
+          git -C "$target_dir" remote add origin "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git -C "$target_dir" push origin HEAD:refs/heads/main --force
