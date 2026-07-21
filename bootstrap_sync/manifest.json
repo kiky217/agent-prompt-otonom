@@ -1,0 +1,47 @@
+{
+  "schema": "hermes.bootstrap-sync/v1",
+  "release": {
+    "id": "bootstrap-sync-v1-preview",
+    "channel": "preview",
+    "source_repository": "kiky217/agent-prompt-otonom",
+    "source_baseline": "7c8d91424aee176d5eda226213aa12da8ede32b0"
+  },
+  "policy": {
+    "default_mode": "dry-run",
+    "runtime_mutation": false,
+    "auto_update_from_main": false,
+    "require_pinned_release": true,
+    "protected_agents": [
+      "seven"
+    ],
+    "deny_when_running": true,
+    "preserve_local": [
+      "credentials",
+      "secrets",
+      "memory",
+      "task_ledger",
+      "model",
+      "endpoint",
+      "approval_state",
+      "logs"
+    ]
+  },
+  "roles": {
+    "seven": {
+      "profile": "roles/seven.json",
+      "migration_enabled": false
+    },
+    "jendral": {
+      "profile": "roles/jendral.json",
+      "migration_enabled": true
+    },
+    "kapten": {
+      "profile": "roles/kapten.json",
+      "migration_enabled": true
+    },
+    "brigadir": {
+      "profile": "roles/brigadir.json",
+      "migration_enabled": true
+    }
+  }
+}
