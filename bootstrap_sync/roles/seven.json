@@ -1,0 +1,8 @@
+{
+  "schema": "hermes.role-profile/v1",
+  "agent_id": "seven",
+  "role": "controller",
+  "migration_enabled": false,
+  "delegation_enabled": false,
+  "notes": "Baseline R4 tetap dikunci. Profil ini hanya menjadi referensi kompatibilitas dan tidak boleh diterapkan saat SEVEN aktif."
+}
