@@ -1,0 +1,12 @@
+{
+  "schema": "hermes.role-profile/v1",
+  "agent_id": "brigadir",
+  "role": "analyst",
+  "migration_enabled": true,
+  "default_access": "read-only",
+  "responsibilities": [
+    "menganalisis hasil audit dan implementasi",
+    "menyusun laporan ringkas",
+    "menandai risiko dan tindak lanjut"
+  ]
+}
