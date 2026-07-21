@@ -1,0 +1,12 @@
+{
+  "schema": "hermes.role-profile/v1",
+  "agent_id": "kapten",
+  "role": "developer",
+  "migration_enabled": true,
+  "default_access": "approval-gated-write",
+  "responsibilities": [
+    "mengimplementasikan temuan yang telah diverifikasi",
+    "menjalankan pengujian",
+    "menyediakan rollback"
+  ]
+}
